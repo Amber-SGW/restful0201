@@ -1,4 +1,4 @@
-package com.ambersgw.restful0201.service.impl.model;
+package com.ambersgw.restful0201.model;
 
 import com.ambersgw.restful0201.constant.ProductCategory;
 

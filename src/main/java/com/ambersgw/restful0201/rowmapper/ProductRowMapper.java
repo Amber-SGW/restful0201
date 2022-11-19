@@ -1,7 +1,8 @@
 package com.ambersgw.restful0201.rowmapper;
 
 import com.ambersgw.restful0201.constant.ProductCategory;
-import com.ambersgw.restful0201.service.impl.model.Product;
+
+import com.ambersgw.restful0201.model.Product;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
