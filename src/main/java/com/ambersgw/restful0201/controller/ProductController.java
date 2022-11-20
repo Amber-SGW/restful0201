@@ -59,4 +59,13 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(updateProduct);
 
     }
+
+    @DeleteMapping("/products/{productId}")
+    public ResponseEntity<?> deleteProduct(@PathVariable Integer productId){
+
+        productService.deleteProductById(productId);
+
+        //回傳空的body表示商品已經被刪除,狀態碼為204no content
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
