@@ -39,8 +39,24 @@ public class ProductController {
           return ResponseEntity.status(HttpStatus.CREATED).body(product);
 
     }
-//    @PutMapping("/products/{productId}")
-//    public ResponseEntity<Product> updateProduct(@PathVariable Integer productId){
-//
-//    }
+    //可以由前端修改的值均為productRequest的變數，因此採用ProductRequest這個class
+    @PutMapping("/products/{productId}")
+    public ResponseEntity<Product> updateProduct(@PathVariable Integer productId,
+                                                 @RequestBody @Valid ProductRequest productRequest){
+
+        //先確認根據id查詢之商品是否存在於資料庫
+        Product product = productService.getProductById(productId);
+        if(product == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        //根據id指定商品後，修改商品參數
+        productService.updateProduct(productId, productRequest);
+
+        //修改商品完成後，藉由id將該商品從資料庫查詢出來
+        Product updateProduct = productService.getProductById(productId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(updateProduct);
+
+    }
 }
