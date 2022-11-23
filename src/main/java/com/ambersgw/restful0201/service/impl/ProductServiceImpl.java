@@ -1,7 +1,10 @@
 package com.ambersgw.restful0201.service.impl;
 
-import com.ambersgw.restful0201.constant.ProductCategory;
+
+
+
 import com.ambersgw.restful0201.dao.ProductDao;
+import com.ambersgw.restful0201.dto.ProductQueryParams;
 import com.ambersgw.restful0201.dto.ProductRequest;
 import com.ambersgw.restful0201.model.Product;
 import com.ambersgw.restful0201.service.ProductService;
@@ -15,9 +18,11 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductDao productDao;
 
+
+
     @Override
-    public List<Product> getProducts(ProductCategory category, String search) {
-        return productDao.getProducts(category, search);
+    public List<Product> getProducts(ProductQueryParams productQueryParams) {
+        return productDao.getProducts(productQueryParams);
     }
 
     @Override

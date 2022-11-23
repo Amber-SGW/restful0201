@@ -1,6 +1,7 @@
 package com.ambersgw.restful0201.dao;
 
 import com.ambersgw.restful0201.constant.ProductCategory;
+import com.ambersgw.restful0201.dto.ProductQueryParams;
 import com.ambersgw.restful0201.dto.ProductRequest;
 import com.ambersgw.restful0201.model.Product;
 import com.ambersgw.restful0201.rowmapper.ProductRowMapper;
@@ -25,7 +26,7 @@ public class ProductDaoImpl implements ProductDao{
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
-    public List<Product> getProducts(ProductCategory category, String search) {
+    public List<Product> getProducts(ProductQueryParams productQueryParams) {
         String sql = "SELECT product_id,product_name, category, image_url, price," +
                 " stock, description, created_date, last_modified_date " +
                 "FROM product " +
@@ -34,19 +35,19 @@ public class ProductDaoImpl implements ProductDao{
             //如果是spring data JPA會自己處理好多查詢條件的組合問題
         Map<String, Object> map = new HashMap<>();
 
-        if(category != null){
+        if(productQueryParams.getCategory() != null){
             //" AND"前面一定要預留一個空白，才不會將sql語句黏在一起
             sql = sql + " AND category = :category";
 
             //將ENUM類型轉換成字串再丟進map(.name())
-            map.put("category",category.name());
+            map.put("category",productQueryParams.getCategory().name());
         }
 
-        if(search != null){
+        if(productQueryParams.getSearch() != null){
             sql = sql + " AND product_name LIKE :search";
             //"%"表示任意字符(詳見sql語句)
             //"%"要寫在map值裡，不能寫在sql語句裡，這是JDBC使用上限制
-            map.put("search", "%" + search + "%");
+            map.put("search", "%" + productQueryParams.getSearch() + "%");
         }
 
         List<Product> productList =namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());

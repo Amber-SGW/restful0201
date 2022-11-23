@@ -1,6 +1,8 @@
 package com.ambersgw.restful0201.controller;
 
+
 import com.ambersgw.restful0201.constant.ProductCategory;
+import com.ambersgw.restful0201.dto.ProductQueryParams;
 import com.ambersgw.restful0201.dto.ProductRequest;
 import com.ambersgw.restful0201.model.Product;
 import com.ambersgw.restful0201.service.ProductService;
@@ -24,7 +26,14 @@ public class ProductController {
             @RequestParam(required = false) ProductCategory category,
             @RequestParam(required = false) String search
             ){
-        List<Product> productList = productService.getProducts(category,search);
+        //new一個查詢class
+        ProductQueryParams productQueryParams = new ProductQueryParams();
+        //獲取前端傳進來的參數
+        productQueryParams.setCategory(category);
+        productQueryParams.setSearch(search);
+
+
+        List<Product> productList = productService.getProducts(productQueryParams);
         return ResponseEntity.status(HttpStatus.OK).body(productList);
 
     }
