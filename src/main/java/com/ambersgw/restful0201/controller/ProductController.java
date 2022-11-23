@@ -1,5 +1,6 @@
 package com.ambersgw.restful0201.controller;
 
+import com.ambersgw.restful0201.constant.ProductCategory;
 import com.ambersgw.restful0201.dto.ProductRequest;
 import com.ambersgw.restful0201.model.Product;
 import com.ambersgw.restful0201.service.ProductService;
@@ -18,8 +19,12 @@ public class ProductController {
 
     //查詢商品列表一定要用"products"，s很重要
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts(){
-        List<Product> productList = productService.getProducts();
+    public ResponseEntity<List<Product>> getProducts(
+            //"required = false"讓分類為可選，非必選(4-7)
+            @RequestParam(required = false) ProductCategory category,
+            @RequestParam(required = false) String search
+            ){
+        List<Product> productList = productService.getProducts(category,search);
         return ResponseEntity.status(HttpStatus.OK).body(productList);
 
     }
