@@ -28,6 +28,7 @@ public class ProductController {
             @RequestParam(required = false) String search,
 
             //排序 sorting
+            //目前設計為單排序(只能有一種種類排序)，若要多排序再查一下(未來優化)
             //預設排列種類/順序為最新時間創建對商品做排序(4-7)
             @RequestParam(defaultValue = "created_date") String orderBy,
             //預設降序對商品做排序(大到小)
