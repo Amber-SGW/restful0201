@@ -6,6 +6,7 @@ import com.ambersgw.restful0201.dto.ProductQueryParams;
 import com.ambersgw.restful0201.dto.ProductRequest;
 import com.ambersgw.restful0201.model.Product;
 import com.ambersgw.restful0201.service.ProductService;
+import com.ambersgw.restful0201.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,8 @@ public class ProductController {
 
     //查詢商品列表一定要用"products"，s很重要
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts(
+    public ResponseEntity<Page<Product>> getProducts(
+//    public ResponseEntity<List<Product>> getProducts(
             //查詢條件 filtering
             //"required = false"讓分類為可選，非必選(4-7)
             @RequestParam(required = false) ProductCategory category,
@@ -57,8 +59,22 @@ public class ProductController {
         productQueryParams.setOffset(offset);
 
 
+        //取得product list
         List<Product> productList = productService.getProducts(productQueryParams);
-        return ResponseEntity.status(HttpStatus.OK).body(productList);
+
+        //取得product總筆數
+        //根據不同查詢條件計算總筆數，因此傳遞productQueryParams參數
+        Integer total = productService.countProduct(productQueryParams);
+
+
+        //設定分頁值
+        Page<Product> page = new Page<>();
+        page.setLimit(limit);
+        page.setOffset(offset);
+        page.setTotal(total);
+        page.setResults(productList);
+
+        return ResponseEntity.status(HttpStatus.OK).body(page);
 
     }
 
