@@ -9,11 +9,16 @@ import com.ambersgw.restful0201.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
 
+//Validated使Max以及Min生效(4-13)
+@Validated
 @RestController
 public class ProductController {
     @Autowired
@@ -32,7 +37,14 @@ public class ProductController {
             //預設排列種類/順序為最新時間創建對商品做排序(4-7)
             @RequestParam(defaultValue = "created_date") String orderBy,
             //預設降序對商品做排序(大到小)
-            @RequestParam(defaultValue = "desc") String sort
+            @RequestParam(defaultValue = "desc") String sort,
+
+            //分頁 pagination
+            //對應sql語句的limit以及offset
+            //可以保護後端資料庫存取的效能
+            //避免前端數據過於大量或是傳遞負數，以Max / Min去限制(4-13)
+            @RequestParam(defaultValue = "5") @Max(1000) @Min(0) Integer limit,
+            @RequestParam(defaultValue = "0") @Min(0)Integer offset
             ){
         //new一個查詢class
         ProductQueryParams productQueryParams = new ProductQueryParams();
@@ -41,6 +53,8 @@ public class ProductController {
         productQueryParams.setSearch(search);
         productQueryParams.setOrderBy(orderBy);
         productQueryParams.setSort(sort);
+        productQueryParams.setLimit(limit);
+        productQueryParams.setOffset(offset);
 
 
         List<Product> productList = productService.getProducts(productQueryParams);

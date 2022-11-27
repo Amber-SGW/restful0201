@@ -35,6 +35,7 @@ public class ProductDaoImpl implements ProductDao{
             //如果是spring data JPA會自己處理好多查詢條件的組合問題
         Map<String, Object> map = new HashMap<>();
 
+        //查詢條件
         if(productQueryParams.getCategory() != null){
             //" AND"前面一定要預留一個空白，才不會將sql語句黏在一起
             sql = sql + " AND category = :category";
@@ -50,9 +51,17 @@ public class ProductDaoImpl implements ProductDao{
             map.put("search", "%" + productQueryParams.getSearch() + "%");
         }
 
+        //排序
         //在where後面拼接下列語法，實作orderby只能用這樣拼接方式實作(應該是JDBCTemplate限制)
         //沒有判斷參數是否為null，是因為在comtroller有預設值
         sql = sql + " ORDER BY " + productQueryParams.getOrderBy() + " " + productQueryParams.getSort();
+
+
+        //分頁
+        //limit & offset語句排在order by後面
+        sql = sql + " LIMIT :limit OFFSET :offset ";
+        map.put("limit",productQueryParams.getLimit());
+        map.put("offset",productQueryParams.getOffset());
 
         List<Product> productList =namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());
         return productList;
