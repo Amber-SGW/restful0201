@@ -1,11 +1,11 @@
 package com.ambersgw.restful0201.dao;
 
-import com.ambersgw.restful0201.constant.ProductCategory;
+
 import com.ambersgw.restful0201.dto.ProductQueryParams;
 import com.ambersgw.restful0201.dto.ProductRequest;
 import com.ambersgw.restful0201.model.Product;
 import com.ambersgw.restful0201.rowmapper.ProductRowMapper;
-import org.jetbrains.annotations.NotNull;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -27,24 +27,12 @@ public class ProductDaoImpl implements ProductDao{
 
     @Override
     public Integer countProduct(ProductQueryParams productQueryParams) {
+        //商品總筆數
         String sql = "SELECT count(*) FROM product WHERE 1=1 ";
         Map<String, Object> map = new HashMap<>();
 
-        //查詢條件
-        if(productQueryParams.getCategory() != null){
-            //" AND"前面一定要預留一個空白，才不會將sql語句黏在一起
-            sql = sql + " AND category = :category";
-
-            //將ENUM類型轉換成字串再丟進map(.name())
-            map.put("category",productQueryParams.getCategory().name());
-        }
-
-        if(productQueryParams.getSearch() != null){
-            sql = sql + " AND product_name LIKE :search";
-            //"%"表示任意字符(詳見sql語句)
-            //"%"要寫在map值裡，不能寫在sql語句裡，這是JDBC使用上限制
-            map.put("search", "%" + productQueryParams.getSearch() + "%");
-        }
+        //提煉程式
+        sql =addFilteringSql(sql,map,productQueryParams);
 
         //傳回的值：第三個為轉換成integer的值
         Integer total = namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
@@ -61,21 +49,8 @@ public class ProductDaoImpl implements ProductDao{
             //如果是spring data JPA會自己處理好多查詢條件的組合問題
         Map<String, Object> map = new HashMap<>();
 
-        //查詢條件
-        if(productQueryParams.getCategory() != null){
-            //" AND"前面一定要預留一個空白，才不會將sql語句黏在一起
-            sql = sql + " AND category = :category";
-
-            //將ENUM類型轉換成字串再丟進map(.name())
-            map.put("category",productQueryParams.getCategory().name());
-        }
-
-        if(productQueryParams.getSearch() != null){
-            sql = sql + " AND product_name LIKE :search";
-            //"%"表示任意字符(詳見sql語句)
-            //"%"要寫在map值裡，不能寫在sql語句裡，這是JDBC使用上限制
-            map.put("search", "%" + productQueryParams.getSearch() + "%");
-        }
+        //提煉程式
+        sql = addFilteringSql(sql, map, productQueryParams);
 
         //排序
         //在where後面拼接下列語法，實作orderby只能用這樣拼接方式實作(應該是JDBCTemplate限制)
@@ -174,5 +149,30 @@ public class ProductDaoImpl implements ProductDao{
         map.put("productId",productId);
 
         namedParameterJdbcTemplate.update(sql,map);
+    }
+
+    //軟體的價值在於重複利用，進行程式提煉
+    //使用private還是public，可以從是否只有該class會使用這個方法
+    //若是public方法，要注意有沒有其他class有使用該方法，刪除時要注意
+    //建議優先使用private
+    private String addFilteringSql(String sql, Map<String,Object> map,ProductQueryParams productQueryParams ){
+        //查詢條件
+        if(productQueryParams.getCategory() != null){
+            //" AND"前面一定要預留一個空白，才不會將sql語句黏在一起
+            sql = sql + " AND category = :category";
+
+            //將ENUM類型轉換成字串再丟進map(.name())
+            map.put("category",productQueryParams.getCategory().name());
+        }
+
+        if(productQueryParams.getSearch() != null){
+            sql = sql + " AND product_name LIKE :search";
+            //"%"表示任意字符(詳見sql語句)
+            //"%"要寫在map值裡，不能寫在sql語句裡，這是JDBC使用上限制
+            map.put("search", "%" + productQueryParams.getSearch() + "%");
+        }
+
+        return sql;
+
     }
 }
