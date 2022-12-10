@@ -1,10 +1,15 @@
 package com.ambersgw.restful0201.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Date;
 
 public class User {
 private Integer userId;
+@JsonProperty("e_mail")  //@JsonXXX有很多~
 private String email;
+@JsonIgnore //避免將該參數(密碼)直接回傳給前端
 private String password;
 private Date createdDate;
 private Date lastModifiedDate;

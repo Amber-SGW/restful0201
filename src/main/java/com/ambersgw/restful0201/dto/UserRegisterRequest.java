@@ -1,10 +1,12 @@
 package com.ambersgw.restful0201.dto;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 public class UserRegisterRequest {
 
     @NotBlank //4-13
+    @Email //當前端傳回email格式，才能通過驗證
     private String email;
     @NotBlank
     private String password;
