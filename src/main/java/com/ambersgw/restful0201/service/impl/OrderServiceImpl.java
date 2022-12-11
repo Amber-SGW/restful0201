@@ -4,6 +4,7 @@ import com.ambersgw.restful0201.dao.OrderDao;
 import com.ambersgw.restful0201.dao.ProductDao;
 import com.ambersgw.restful0201.dto.BuyItem;
 import com.ambersgw.restful0201.dto.CreateOrderRequest;
+import com.ambersgw.restful0201.model.Order;
 import com.ambersgw.restful0201.model.OrderItem;
 import com.ambersgw.restful0201.model.Product;
 import com.ambersgw.restful0201.service.OrderService;
@@ -20,6 +21,15 @@ public class OrderServiceImpl implements OrderService {
     private OrderDao orderDao;
     @Autowired
     private ProductDao productDao;
+
+    @Override
+    public Order getOrderById(Integer orderId) {
+        Order order = orderDao.getOrderById(orderId);
+
+        List<OrderItem> orderItemList = orderDao.getOrderItemByOrderId(orderId);
+        order.setOrderItemList(orderItemList);
+        return order;
+    }
 
     @Transactional //5-10
     @Override
@@ -50,4 +60,6 @@ public class OrderServiceImpl implements OrderService {
 
         return orderId;
     }
+
+
 }

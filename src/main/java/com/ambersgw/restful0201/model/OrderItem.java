@@ -7,6 +7,25 @@ public class OrderItem {
     private Integer quantity;
     private Integer amount;
 
+    private String productName;
+    private String ImgUrl;
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getImgUrl() {
+        return ImgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        ImgUrl = imgUrl;
+    }
+
     public Integer getOrderItemId() {
         return orderItemId;
     }

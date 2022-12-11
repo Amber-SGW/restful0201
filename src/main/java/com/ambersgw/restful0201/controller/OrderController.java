@@ -1,6 +1,7 @@
 package com.ambersgw.restful0201.controller;
 
 import com.ambersgw.restful0201.dto.CreateOrderRequest;
+import com.ambersgw.restful0201.model.Order;
 import com.ambersgw.restful0201.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,8 @@ public class OrderController {
                                          @RequestBody CreateOrderRequest createOrderRequest){
 
         Integer orderId = orderService.createOrder(userId,createOrderRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderId);
+        Order order = orderService.getOrderById(orderId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(order);
 
 
     }
